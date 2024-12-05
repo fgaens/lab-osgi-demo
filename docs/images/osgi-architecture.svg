@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+    <!-- Background -->
+    <rect width="800" height="500" fill="#ffffff"/>
+    
+    <!-- JVM Container -->
+    <rect x="50" y="40" width="700" height="420" rx="10" fill="#f0f0f0" stroke="#333333" stroke-width="2"/>
+    <text x="60" y="70" font-family="Arial" font-size="18" fill="#333333">JVM with OSGi Container</text>
+    
+    <!-- Bundle 1 - API -->
+    <rect x="100" y="100" width="200" height="120" rx="5" fill="#e1f5fe" stroke="#0288d1" stroke-width="2"/>
+    <text x="120" y="130" font-family="Arial" font-size="16" fill="#0288d1">API Bundle</text>
+    <text x="120" y="160" font-family="Arial" font-size="14" fill="#666666">GreetingService</text>
+    <text x="120" y="180" font-family="Arial" font-size="12" fill="#666666">Interface Definition</text>
+    
+    <!-- Bundle 2 - Provider -->
+    <rect x="500" y="100" width="200" height="120" rx="5" fill="#e8f5e9" stroke="#388e3c" stroke-width="2"/>
+    <text x="520" y="130" font-family="Arial" font-size="16" fill="#388e3c">Provider Bundle</text>
+    <text x="520" y="160" font-family="Arial" font-size="14" fill="#666666">GreetingServiceImpl</text>
+    <text x="520" y="180" font-family="Arial" font-size="12" fill="#666666">Service Implementation</text>
+    
+    <!-- Bundle 3 - Consumer -->
+    <rect x="300" y="300" width="200" height="120" rx="5" fill="#fff3e0" stroke="#f57c00" stroke-width="2"/>
+    <text x="320" y="330" font-family="Arial" font-size="16" fill="#f57c00">Consumer Bundle</text>
+    <text x="320" y="360" font-family="Arial" font-size="14" fill="#666666">GreetingConsumer</text>
+    <text x="320" y="380" font-family="Arial" font-size="12" fill="#666666">Service Consumer</text>
+    
+    <!-- Arrows -->
+    <!-- API to Provider -->
+    <path d="M300 160 L500 160" stroke="#666666" stroke-width="2" marker-end="url(#arrowhead)"/>
+    <!-- API to Consumer -->
+    <path d="M200 220 L300 300" stroke="#666666" stroke-width="2" marker-end="url(#arrowhead)"/>
+    <!-- Provider to Consumer -->
+    <path d="M600 220 L500 300" stroke="#666666" stroke-width="2" marker-end="url(#arrowhead)" stroke-dasharray="5,5"/>
+    
+    <!-- Arrow Marker -->
+    <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#666666"/>
+        </marker>
+    </defs>
+    
+    <!-- Legend -->
+    <rect x="60" y="440" width="15" height="2" stroke="#666666" stroke-width="2"/>
+    <text x="80" y="445" font-family="Arial" font-size="12" fill="#666666">Depends on</text>
+    
+    <rect x="200" y="440" width="15" height="2" stroke="#666666" stroke-width="2" stroke-dasharray="5,5"/>
+    <text x="220" y="445" font-family="Arial" font-size="12" fill="#666666">Service Communication</text>
+</svg>

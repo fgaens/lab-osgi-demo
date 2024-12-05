@@ -2,6 +2,8 @@
 
 This project demonstrates a basic OSGi service implementation using Declarative Services. It consists of a service API, a service provider, and a service consumer.
 
+![osgi-architecture](docs/images/osgi-architecture.svg)
+
 ## What is OSGi?
 
 OSGi (Open Services Gateway initiative) is a Java framework for developing and deploying modular software programs and libraries. It introduces a component system for Java that allows applications to be dynamically composed of many different reusable components.
