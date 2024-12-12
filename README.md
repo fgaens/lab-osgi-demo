@@ -1,72 +1,39 @@
-# OSGi Service Example
+# OSGi Dynamic Services Demo
 
-This project demonstrates a basic OSGi service implementation using Declarative Services. It consists of a service API, a service provider, and a service consumer.
-
-![osgi-architecture](docs/images/osgi-architecture.svg)
-
-## What is OSGi?
-
-OSGi (Open Services Gateway initiative) is a Java framework for developing and deploying modular software programs and libraries. It introduces a component system for Java that allows applications to be dynamically composed of many different reusable components.
-
-### Key Concepts
-
-- **Bundles**: The OSGi components that are deployed
-- **Services**: The objects that are shared between bundles
-- **Life Cycle**: API to install, start, stop, update, and uninstall bundles
-- **Modules**: The system that defines how a bundle can import and export code
-- **Security**: The system that handles the security aspects
-
-## OSGi vs Microservices
-
-| Aspect | OSGi | Microservices |
-|--------|------|---------------|
-| **Granularity** | Fine-grained modules within a single JVM | Independent services, each potentially running in its own JVM |
-| **Communication** | In-memory method calls | Network-based (HTTP, message queues) |
-| **Deployment** | Hot deployment within container | Independent deployment of services |
-| **State** | Shared JVM memory | Each service has its own state |
-| **Scalability** | Vertical (within JVM limits) | Horizontal (can deploy multiple instances) |
-| **Isolation** | Class loader isolation | Process/container isolation |
-| **Development** | Modular monolith | Distributed system |
-| **Performance** | Very fast (in-memory) | Network overhead |
-| **Complexity** | Learning curve for OSGi concepts | Learning curve for distributed systems |
+This repository demonstrates OSGi's dynamic service capabilities through a practical example. It shows how to create, deploy, and update services at runtime without application restarts.
 
 ## Project Structure
 
-- `api`: Defines the service interface
-- `provider`: Implements the service interface
-- `consumer`: Consumes the service
+```
+.
+├── api/                 # Service interfaces
+├── provider/           # Service implementations
+├── consumer/          # Service consumers
+├── integration-tests/ # Automated tests
+└── docs/             # Additional documentation
+```
 
-## Running the Application
+## Key Features
 
-### Prerequisites
+- Dynamic service registration and discovery
+- Hot deployment of new service implementations
+- Service ranking and filtering
+- Integration with Maven and Apache Karaf
+- Comprehensive test suite
+- Documentation with practical examples
 
-1. Download Apache Karaf from [https://karaf.apache.org/download.html](https://karaf.apache.org/download.html)
-2. Extract the archive to your desired location
+## Prerequisites
 
-### Starting Karaf
+- Java 11 or higher
+- Maven 3.6 or higher
+- Apache Karaf 4.4.0 or higher
 
-1. Navigate to the Karaf directory
-2. Run the start script:
+## Quick Start
+
+1. Clone the repository:
    ```bash
-   # For Unix/Linux/Mac
-   bin/karaf
-   ```
-
-### Stopping Karaf
-1. Inside Karaf console:
-    ```bash
-    # Full command
-    shutdown
-   
-    # Alternative command
-    system:shutdown
-    ```
-
-### Installing the Bundles
-
-1. First, install the Declarative Services feature:
-   ```bash
-   feature:install scr
+   git clone https://github.com/fgaens/osgi-dynamic-services.git
+   cd osgi-dynamic-services
    ```
 
 2. Build the project:
@@ -74,47 +41,135 @@ OSGi (Open Services Gateway initiative) is a Java framework for developing and d
    mvn clean install
    ```
 
-3. Install the bundles in Karaf (adjust paths according to your setup):
+3. Start Karaf:
    ```bash
-   bundle:install -s file:/path/to/api/target/api-1.0-SNAPSHOT.jar
-   bundle:install -s file:/path/to/provider/target/provider-1.0-SNAPSHOT.jar
-   bundle:install -s file:/path/to/consumer/target/consumer-1.0-SNAPSHOT.jar
+   ${KARAF_HOME}/bin/karaf
    ```
 
-### Useful Karaf Commands
+4. Install bundles:
+   ```bash
+   karaf> feature:install scr
+   karaf> bundle:install -s file:api/target/api-1.0-SNAPSHOT.jar
+   karaf> bundle:install -s file:provider/target/provider-1.0-SNAPSHOT.jar
+   karaf> bundle:install -s file:consumer/target/consumer-1.0-SNAPSHOT.jar
+   ```
 
-- List installed bundles:
-  ```bash
-  bundle:list
-  ```
+## Development Guide
 
-- Check service components:
-  ```bash
-  scr:list
-  ```
+### Creating a New Service
 
-- View logs:
-  ```bash
-  log:tail
-  ```
+1. Define the interface in `api`:
+   ```java
+   public interface MyService {
+       String doSomething();
+   }
+   ```
 
-- Stop a bundle:
-  ```bash
-  bundle:stop <bundle-id>
-  ```
+2. Implement in `provider`:
+   ```java
+   @Component(service = MyService.class)
+   public class MyServiceImpl implements MyService {
+       public String doSomething() {
+           return "Done!";
+       }
+   }
+   ```
 
-- Start a bundle:
-  ```bash
-  bundle:start <bundle-id>
-  ```
+3. Consume in `consumer`:
+   ```java
+   @Component
+   public class MyServiceConsumer {
+       @Reference
+       private MyService service;
+       
+       // Use service
+   }
+   ```
+
+### Running Tests
+
+```bash
+# Unit tests
+mvn test
+
+# Integration tests
+mvn verify -P integration-tests
+```
+
+## Advanced Topics
+
+### Service Properties
+
+```java
+@Component(
+    service = GreetingService.class,
+    property = {
+        "language=en",
+        "region=US"
+    }
+)
+```
+
+### Service References
+
+```java
+@Reference(
+    target = "(language=en)",
+    policy = ReferencePolicy.DYNAMIC
+)
+```
+
+### Bundle Management
+
+```bash
+# Update a bundle
+karaf> bundle:update <id> file:path/to/new/bundle.jar
+
+# List bundles
+karaf> bundle:list
+
+# Start/stop bundle
+karaf> bundle:start <id>
+karaf> bundle:stop <id>
+```
 
 ## Troubleshooting
 
-If bundles fail to start, check:
-1. Bundle status using `bundle:list`
-2. Service component status using `scr:list`
-3. Logs using `log:tail`
-4. Dependencies using `bundle:diag <bundle-id>`
+### Common Issues
+
+1. **Bundle not starting**
+    - Check bundle state: `bundle:list`
+    - View logs: `log:tail`
+    - Verify dependencies: `bundle:diag <id>`
+
+2. **Service not found**
+    - Check service registry: `service:list`
+    - Verify component state: `scr:list`
+    - Check service properties: `service:list <service interface>`
+
+### Debug Mode
+
+Enable remote debugging in Karaf:
+
+```bash
+# Edit etc/custom.properties
+org.osgi.framework.bootdelegation=sun.*,com.sun.*
+```
+
+Start Karaf with debugging enabled:
+```bash
+bin/karaf debug
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request
+
+## License
+
+Apache License 2.0
 
 ## References
 

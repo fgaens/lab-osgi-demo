@@ -3,17 +3,28 @@ package be.codesolutions.osgi.consumer;
 import be.codesolutions.osgi.api.GreetingService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 @Component(
-    immediate = true
+        immediate = true
 )
 public class GreetingConsumer {
-    private GreetingService greetingService;
+    private volatile GreetingService greetingService;
 
-    @Reference
-    public void setGreetingService(GreetingService greetingService) {
-        this.greetingService = greetingService;
-        // Service is injected, we can use it
-        System.out.println(greetingService.greet("OSGi User"));
+    @Reference(
+            target = "(language=en)",
+            policy = ReferencePolicy.DYNAMIC
+    )
+    public void setGreetingService(GreetingService service) {
+        this.greetingService = service;
+        System.out.println("New greeting service bound!");
+        System.out.println(service.greet("OSGi User"));
+    }
+
+    public void unsetGreetingService(GreetingService service) {
+        if (this.greetingService == service) {
+            this.greetingService = null;
+            System.out.println("Greeting service unbound!");
+        }
     }
 }

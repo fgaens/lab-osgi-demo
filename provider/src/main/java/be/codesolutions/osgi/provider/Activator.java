@@ -10,19 +10,17 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) {
-        // Create and register the service
         GreetingService service = new GreetingServiceImpl();
         registration = context.registerService(
-            GreetingService.class,
-            service,
-            null
+                GreetingService.class,
+                service,
+                null
         );
         System.out.println("Greeting Service Provider started");
     }
 
     @Override
     public void stop(BundleContext context) {
-        // Unregister the service
         if (registration != null) {
             registration.unregister();
             registration = null;

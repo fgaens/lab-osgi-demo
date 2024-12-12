@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>be.codesolutions</groupId>
-        <artifactId>osgi</artifactId>
+        <artifactId>osgi-dynamic-services</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 

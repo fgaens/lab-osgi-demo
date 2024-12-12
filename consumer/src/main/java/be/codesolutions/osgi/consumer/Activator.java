@@ -10,7 +10,6 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) {
-        // Get service reference and use the service
         serviceReference = context.getServiceReference(GreetingService.class);
         if (serviceReference != null) {
             GreetingService service = context.getService(serviceReference);
@@ -21,7 +20,6 @@ public class Activator implements BundleActivator {
 
     @Override
     public void stop(BundleContext context) {
-        // Release the service reference
         if (serviceReference != null) {
             context.ungetService(serviceReference);
             serviceReference = null;
